@@ -4,13 +4,18 @@ import httpStatus from 'http-status';
 import APIError from '../helpers/APIError';
 
 /**
- * User Schema
+ * Task Schema
  */
-const UserSchema = new mongoose.Schema({
-  Name: String,
-  Email: String,
-  Business: String,
-  Role: String
+const TaskSchema = new mongoose.Schema({
+  TaskName: String,
+  Content: String,
+  URL: String,
+  AssigneesEmails: Array,
+  DueDate: Date,
+  Active: Boolean,
+  Completed: Boolean,
+  Priority: Number,
+  Project: String
 });
 
 /**
@@ -23,26 +28,26 @@ const UserSchema = new mongoose.Schema({
 /**
  * Methods
  */
-UserSchema.method({
+TaskSchema.method({
 });
 
 /**
  * Statics
  */
-UserSchema.statics = {
+TaskSchema.statics = {
   /**
-   * Get user
-   * @param {ObjectId} email - The email of user.
-   * @returns {Promise<User, APIError>}
+   * Get task
+   * @param {ObjectId} id - The objectId of task.
+   * @returns {Promise<Task, APIError>}
    */
-  get(email) {
-    return this.findOne({ Email: email })
+  get(id) {
+    return this.findById(id)
       .exec()
-      .then((user) => {
-        if (user) {
-          return user;
+      .then((task) => {
+        if (task) {
+          return task;
         }
-        const err = new APIError('No such user exists!', httpStatus.NOT_FOUND);
+        const err = new APIError('No such task exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
       });
   },
@@ -63,6 +68,6 @@ UserSchema.statics = {
 };
 
 /**
- * @typedef User
+ * @typedef Task
  */
-export default mongoose.model('User', UserSchema);
+export default mongoose.model('Task', TaskSchema);
