@@ -35,16 +35,18 @@ function get(req, res) {
  */
 function create(req, res, next) {
   const task = new Task({
-    TaskName: req.body.task.TaskName,
+    TaskName: req.body.TaskName,
     Content: req.body.Content,
     URL: req.body.URL,
     Assignee: req.body.Assignee,
     DueDate: req.body.DueDate,
     Active: req.body.Active,
     Completed: req.body.Completed,
-    priority: req.body.priority,
+    Priority: req.body.Priority,
     ProjectBelonged: req.body.ProjectBelonged
   });
+
+  console.log('Task created', task);
 
   task.save()
     .then(savedTask => res.json(savedTask))
@@ -66,15 +68,34 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const task = req.task;
-  task.TaskName = req.body.TaskName;
-  task.Content = req.body.Content;
-  task.URL = req.body.URL;
-  task.Assignee = req.body.Assignee;
-  task.DueDate = req.body.DueDate;
-  task.Active = req.body.Active;
-  task.Completed = req.body.Completed;
-  task.priority = req.body.priority;
-  task.ProjectBelonged = req.body.ProjectBelonged;
+  if (req.body.TaskName) {
+    task.TaskName = req.body.TaskName;
+  }
+  if (req.body.Content) {
+    task.Content = req.body.Content;
+  }
+  if (req.body.URL) {
+    task.URL = req.body.URL;
+  }
+  if (req.body.Assigned) {
+    task.Assigned.push(req.body.Assigned);
+  }
+  if (req.body.DueDate) {
+    task.DueDate = req.body.DueDate;
+  }
+  if (req.body.Active) {
+    task.Active = req.body.Active;
+  }
+  if (req.body.Completed) {
+    task.Completed = req.body.Completed;
+  }
+  if (req.body.Priority) {
+    task.Priority = req.body.Priority;
+  }
+  if (req.body.ProjectBelonged) {
+    task.ProjectBelonged = req.body.ProjectBelonged;
+  }
+
   task.save()
     .then(savedTask => res.json(savedTask))
     .catch(e => next(e));

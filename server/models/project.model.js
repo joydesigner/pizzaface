@@ -1,6 +1,7 @@
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import httpStatus from 'http-status';
+import Task from './task.model';
 import APIError from '../helpers/APIError';
 
 /**
@@ -9,7 +10,8 @@ import APIError from '../helpers/APIError';
 const ProjectSchema = new mongoose.Schema({
   ProjectName: String,
   Owner: String,
-  Closed: Boolean
+  Closed: Boolean,
+  Tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: Task }]
 });
 
 /**
@@ -44,6 +46,15 @@ ProjectSchema.statics = {
         const err = new APIError('No such project exists!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
       });
+  },
+
+  /**
+   * Get project by owner
+   * @param {Owner} email - The email of project Owner.
+   * @returns {Promise<Project, APIError>
+   */
+  getByEmail(email) {
+    return this.find({ Owner: email });
   },
 
   /**

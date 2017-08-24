@@ -10,7 +10,8 @@ const UserSchema = new mongoose.Schema({
   Name: String,
   Email: String,
   Business: String,
-  Role: String
+  Role: String,
+  Tasks: Array
 });
 
 /**

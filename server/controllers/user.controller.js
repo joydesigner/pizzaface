@@ -47,10 +47,21 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const user = req.user;
-  user.Name = req.body.Name;
-  user.Email = req.body.Email;
-  user.Business = req.body.Business;
-  user.Role = req.body.Role;
+  if (req.body.Name) {
+    user.Name = req.body.Name;
+  }
+  if (req.body.Email) {
+    user.Email = req.body.Email;
+  }
+  if (req.body.Business) {
+    user.Business = req.body.Business;
+  }
+  if (req.body.Role) {
+    user.Role = req.body.Role;
+  }
+  if (req.body.Tasks) {
+    user.Tasks.push(req.body.Tasks);
+  }
 
   user.save()
     .then(savedUser => res.json(savedUser))

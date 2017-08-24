@@ -4,6 +4,7 @@ import authRoutes from './auth.route';
 import taskRoutes from './task.route';
 import bizRoutes from './business.route';
 import projectRoutes from './project.route';
+import dashboardRoutes from './dashboard.route';
 
 const router = express.Router(); // eslint-disable-line new-cap
 
@@ -26,5 +27,8 @@ router.use('/projects', projectRoutes);
 
 // mount auth routes at /auth
 router.use('/auth', authRoutes);
+
+// mount dashboard routes at /dashboard
+router.use('/dashboard', dashboardRoutes);
 
 export default router;

@@ -1,5 +1,4 @@
 import Project from '../models/project.model';
-// import Task from '../models/task.model';
 
 /**
  * Load project and append to req.
@@ -50,9 +49,18 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const project = req.project;
-  project.ProjectName = req.body.ProjectName;
-  project.Owner = req.body.Owner;
-  project.Closed = req.body.Closed;
+  if (req.body.ProjectName) {
+    project.ProjectName = req.body.ProjectName;
+  }
+  if (req.body.Owner) {
+    project.Owner = req.body.Owner;
+  }
+  if (req.body.Closed) {
+    project.Closed = req.body.Closed;
+  }
+  if (req.body.Tasks) {
+    project.Tasks = req.body.Tasks;
+  }
 
   project.save()
     .then(savedProject => res.json(savedProject))

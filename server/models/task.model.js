@@ -1,7 +1,9 @@
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import httpStatus from 'http-status';
+import Project from './project.model';
 import APIError from '../helpers/APIError';
+
 
 /**
  * Task Schema
@@ -10,12 +12,12 @@ const TaskSchema = new mongoose.Schema({
   TaskName: String,
   Content: String,
   URL: String,
-  AssigneesEmails: Array,
+  Assigned: Array,
   DueDate: Date,
   Active: Boolean,
   Completed: Boolean,
   Priority: Number,
-  Project: String
+  ProjectBelonged: [{ type: mongoose.Schema.Types.ObjectId, ref: Project }]
 });
 
 /**
@@ -51,7 +53,22 @@ TaskSchema.statics = {
         return Promise.reject(err);
       });
   },
-
+  /**
+   * Get tasks by ProjectId
+   * @param (ObjectId} projectId - the ObjectId of project.
+   * @returns {Promise<Task, APIError>}
+   */
+  getByProjectId(id) {
+    return this.find({ ProjectBelonged: id })
+      .exec()
+      .then((task) => {
+        if (task) {
+          return task;
+        }
+        const err = new APIError('No such task for this project!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
+  },
   /**
    * List users in descending order of 'createdAt' timestamp.
    * @param {number} skip - Number of users to be skipped.
