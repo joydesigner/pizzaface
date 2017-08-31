@@ -5,7 +5,11 @@ import APIError from '../helpers/APIError';
  * Business Schema
  */
 const BusinessSchema = new mongoose.Schema({
-  BizName: String
+  bizName: {
+    type: String,
+    required: true
+  },
+  description: String
 });
 
 /**
@@ -25,7 +29,6 @@ BusinessSchema.statics = {
    */
   get(id) {
     return this.findById(id)
-      .exec()
       .then((business) => {
         if (business) {
           return business;
@@ -45,8 +48,7 @@ BusinessSchema.statics = {
     return this.find()
       .sort({ createdAt: -1 })
       .skip(+skip)
-      .limit(+limit)
-      .exec();
+      .limit(+limit);
   }
 };
 

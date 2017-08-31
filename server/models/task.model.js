@@ -1,23 +1,29 @@
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import httpStatus from 'http-status';
-import Project from './project.model';
+import Project from './project.model'; // eslint-disable-line no-unused-vars
+import User from './user.model'; // eslint-disable-line no-unused-vars
 import APIError from '../helpers/APIError';
-
 
 /**
  * Task Schema
  */
 const TaskSchema = new mongoose.Schema({
-  TaskName: String,
-  Content: String,
-  URL: String,
-  Assigned: Array,
-  DueDate: Date,
-  Active: Boolean,
-  Completed: Boolean,
-  Priority: Number,
-  ProjectBelonged: [{ type: mongoose.Schema.Types.ObjectId, ref: Project }]
+  taskName: String,
+  content: String,
+  url: String,
+  assignees: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  dueDate: Date,
+  isActive: Boolean,
+  completed: Boolean,
+  priority: Number,
+  projectBelonged: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project'
+  }]
 });
 
 /**
@@ -26,6 +32,7 @@ const TaskSchema = new mongoose.Schema({
  * - validations
  * - virtuals
  */
+
 
 /**
  * Methods
@@ -44,7 +51,7 @@ TaskSchema.statics = {
    */
   get(id) {
     return this.findById(id)
-      .exec()
+      .populate('projectBelonged')
       .then((task) => {
         if (task) {
           return task;
@@ -59,8 +66,7 @@ TaskSchema.statics = {
    * @returns {Promise<Task, APIError>}
    */
   getByProjectId(id) {
-    return this.find({ ProjectBelonged: id })
-      .exec()
+    return this.find({ projectBelongedTo: id })
       .then((task) => {
         if (task) {
           return task;
@@ -79,8 +85,7 @@ TaskSchema.statics = {
     return this.find()
       .sort({ createdAt: -1 })
       .skip(+skip)
-      .limit(+limit)
-      .exec();
+      .limit(+limit);
   }
 };
 

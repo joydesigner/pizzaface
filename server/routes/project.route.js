@@ -24,7 +24,12 @@ router.route('/:projectId')
   /** DELETE /api/projects/:projectId - Delete project */
   .delete(projectCtrl.remove);
 
-/** Load task when API with projectId route parameter is hit */
+router.route('/me/:email')
+/** GET /api/projects/me/:email - Get projects */
+  .get(projectCtrl.get);
+
+/** Load project when API with projectId route parameter is hit */
 router.param('projectId', projectCtrl.load);
+router.param('email', projectCtrl.getByAdminEmail);
 
 export default router;

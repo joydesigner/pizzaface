@@ -1,19 +1,38 @@
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import httpStatus from 'http-status';
-import Task from './task.model';
+import Task from './task.model'; // eslint-disable-line no-unused-vars
+import User from './user.model'; // eslint-disable-line no-unused-vars
 import APIError from '../helpers/APIError';
 
 /**
  * Project Schema
  */
 const ProjectSchema = new mongoose.Schema({
-  ProjectName: String,
-  Owner: String,
-  Closed: Boolean,
-  Tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: Task }]
+  projectName: {
+    type: String,
+    required: true
+  },
+  description: {
+    type: String
+  },
+  owner: {
+    type: String,
+    required: true
+  },
+  createdOn: {
+    type: Date,
+    default: Date.now
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  tasks: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Task'
+  }]
 });
-
 /**
  * Add your
  * - pre-save hooks
@@ -24,8 +43,7 @@ const ProjectSchema = new mongoose.Schema({
 /**
  * Methods
  */
-ProjectSchema.method({
-});
+ProjectSchema.method({});
 
 /**
  * Statics
@@ -38,7 +56,7 @@ ProjectSchema.statics = {
    */
   get(id) {
     return this.findById(id)
-      .exec()
+      .populate('tasks')
       .then((project) => {
         if (project) {
           return project;
@@ -53,8 +71,15 @@ ProjectSchema.statics = {
    * @param {Owner} email - The email of project Owner.
    * @returns {Promise<Project, APIError>
    */
-  getByEmail(email) {
-    return this.find({ Owner: email });
+  getByAdminEmail(email) {
+    return this.find({ owner: email })
+      .then((project) => {
+        if (project) {
+          return project;
+        }
+        const err = new APIError('No such project exists for this user!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
   },
 
   /**
@@ -67,8 +92,7 @@ ProjectSchema.statics = {
     return this.find()
       .sort({ createdAt: -1 })
       .skip(+skip)
-      .limit(+limit)
-      .exec();
+      .limit(+limit);
   }
 };
 

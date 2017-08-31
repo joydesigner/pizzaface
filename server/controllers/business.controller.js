@@ -27,7 +27,8 @@ function get(req, res) {
  */
 function create(req, res, next) {
   const business = new Business({
-    BizName: req.body.BizName
+    bizName: req.body.bizName,
+    description: req.body.description
   });
 
   business.save()
@@ -42,7 +43,8 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const business = req.business;
-  business.BizName = req.body.BizName;
+  business.bizName = req.body.bizName;
+  business.description = req.body.description;
 
   business.save()
     .then(savedBusiness => res.json(savedBusiness))

@@ -6,7 +6,7 @@ import bizCtrl from '../controllers/business.controller';
 const router = express.Router(); // eslint-disable-line new-cap
 
 router.route('/')
-/** GET /api/tasks - Get list of tasks */
+/** GET /api/biz - Get list of tasks */
   .get(bizCtrl.list)
 
   /** POST /api/biz - Create new business */

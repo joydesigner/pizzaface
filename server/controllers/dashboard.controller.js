@@ -6,7 +6,7 @@ import Task from '../models/task.model';
  * Load project and append to req.
  */
 function load(req, res, next, email) {
-  Project.getByEmail(email)
+  Project.getByAdminEmail(email)
     .then((projects) => {
       req.projects = projects; // eslint-disable-line no-param-reassign
       return next();
@@ -28,10 +28,7 @@ function get(req, res) {
         const taskPromise = Task.getByProjectId(project._id);
         const sourceTasks = Observable.fromPromise(taskPromise);
         sourceTasks.subscribe((tasks) => {
-          console.log('Tasks::', tasks);
-          project.Tasks = tasks[0]; // eslint-disable-line no-param-reassign
-          console.log('Project Tasks::', project.Tasks);
-          console.log('Project::', project);
+          project.tasks = tasks[0]; // eslint-disable-line no-param-reassign
         });
       },
       (e) => {

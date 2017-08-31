@@ -21,6 +21,19 @@ function get(req, res) {
 }
 
 /**
+ * Get project by admin email
+ * @returns {Project}
+ */
+function getByAdminEmail(req, res, next, email) {
+  Project.getByAdminEmail(email)
+    .then((project) => {
+      req.project = project; // eslint-disable-line no-param-reassign
+      return res.json(req.project);
+    })
+    .catch(e => next(e));
+}
+
+/**
  * Create new project
  * @property {string} req.body.ProjectName - The project name of project.
  * @property {string} req.body.Owner - The Owner of project.
@@ -29,9 +42,11 @@ function get(req, res) {
  */
 function create(req, res, next) {
   const project = new Project({
-    ProjectName: req.body.ProjectName,
-    Owner: req.body.Owner,
-    Closed: req.body.Closed
+    projectName: req.body.projectName,
+    description: req.body.description,
+    owner: req.body.owner,
+    createdOn: req.body.createdOn,
+    isActive: req.body.isActive
   });
 
   project.save()
@@ -42,6 +57,7 @@ function create(req, res, next) {
 /**
  * Update existing project
  * @property {string} req.body.ProjectName - The project name of project.
+ * @property {string} req.body.description - The description of project.
  * @property {string} req.body.Owner - The Owner of project.
  * @property {string} req.body.Tasks - The Tasks of project.
  * @property {string} req.body.Closed - The Closed status of project.
@@ -49,17 +65,23 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const project = req.project;
-  if (req.body.ProjectName) {
-    project.ProjectName = req.body.ProjectName;
+  if (req.body.projectName) {
+    project.projectName = req.body.projectName;
   }
-  if (req.body.Owner) {
-    project.Owner = req.body.Owner;
+  if (req.body.description) {
+    project.description = req.body.description;
   }
-  if (req.body.Closed) {
-    project.Closed = req.body.Closed;
+  if (req.body.owner) {
+    project.owner = req.body.owner;
   }
-  if (req.body.Tasks) {
-    project.Tasks = req.body.Tasks;
+  if (req.body.createdOn) {
+    project.createdOn = req.body.createdOn;
+  }
+  if (req.body.isActive) {
+    project.isActive = req.body.isActive;
+  }
+  if (req.body.tasks) {
+    project.tasks.push(req.body.tasks);
   }
 
   project.save()
@@ -91,4 +113,4 @@ function remove(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { load, get, create, update, list, remove };
+export default { load, get, getByAdminEmail, create, update, list, remove };

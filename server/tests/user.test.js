@@ -18,30 +18,30 @@ after((done) => {
 });
 
 describe('## User APIs', () => {
-  let user = {
-    name: 'KK123',
-    email: 'kk123@test.com',
-    business: 'financial',
-    role: 'user'
-  };
+//   let user = {
+//     name: 'KK123',
+//     email: 'kk123@test.com',
+//     business: 'financial',
+//     role: 'user'
+//   };
 
-  describe('# POST /api/users', () => {
-    it('should create a new user', (done) => {
-      request(app)
-        .post('/api/users')
-        .send(user)
-        .expect(httpStatus.OK)
-        .then((res) => {
-          expect(res.body.Name).to.equal(user.Name);
-          expect(res.body.Email).to.equal(user.Email);
-          expect(res.body.Business).to.equal(user.Business);
-          expect(res.body.Role).to.equal(user.Role);
-          user = res.body;
-          done();
-        })
-        .catch(done);
-    });
-  });
+  // describe('# POST /api/users', () => {
+  //   it('should create a new user', (done) => {
+  //     request(app)
+  //       .post('/api/users')
+  //       .send(user)
+  //       .expect(httpStatus.OK)
+  //       .then((res) => {
+  //         expect(res.body.name).to.equal(user.name);
+  //         expect(res.body.email).to.equal(user.email);
+  //         expect(res.body.business).to.equal(user.business);
+  //         expect(res.body.role).to.equal(user.role);
+  //         user = res.body;
+  //         done();
+  //       })
+  //       .catch(done);
+  //   });
+  // });
 
   // describe('# GET /api/users/:userId', () => {
   //   it('should get user details', (done) => {

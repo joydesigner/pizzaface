@@ -28,10 +28,10 @@ function get(req, res) {
  */
 function create(req, res, next) {
   const user = new User({
-    Name: req.body.Name,
-    Email: req.body.Email,
-    Business: req.body.Business,
-    Role: req.body.Role
+    name: req.body.name,
+    email: req.body.email,
+    business: req.body.business,
+    role: req.body.role
   });
 
   user.save()
@@ -47,22 +47,18 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const user = req.user;
-  if (req.body.Name) {
-    user.Name = req.body.Name;
+  if (req.body.name) {
+    user.name = req.body.name;
   }
-  if (req.body.Email) {
-    user.Email = req.body.Email;
+  if (req.body.email) {
+    user.email = req.body.email;
   }
-  if (req.body.Business) {
-    user.Business = req.body.Business;
+  if (req.body.business) {
+    user.business = req.body.business;
   }
-  if (req.body.Role) {
-    user.Role = req.body.Role;
+  if (req.body.role) {
+    user.role = req.body.role;
   }
-  if (req.body.Tasks) {
-    user.Tasks.push(req.body.Tasks);
-  }
-
   user.save()
     .then(savedUser => res.json(savedUser))
     .catch(e => next(e));

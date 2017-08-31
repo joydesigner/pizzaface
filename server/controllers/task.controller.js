@@ -1,4 +1,5 @@
 import Task from '../models/task.model';
+import User from '../models/user.model';
 
 /**
  * Load task and append to req.
@@ -35,18 +36,16 @@ function get(req, res) {
  */
 function create(req, res, next) {
   const task = new Task({
-    TaskName: req.body.TaskName,
-    Content: req.body.Content,
-    URL: req.body.URL,
-    Assignee: req.body.Assignee,
-    DueDate: req.body.DueDate,
-    Active: req.body.Active,
-    Completed: req.body.Completed,
-    Priority: req.body.Priority,
-    ProjectBelonged: req.body.ProjectBelonged
+    taskName: req.body.taskName,
+    content: req.body.content,
+    url: req.body.url,
+    assignees: req.body.assignees,
+    dueDate: req.body.dueDate,
+    isActive: req.body.isActive,
+    completed: req.body.completed,
+    priority: req.body.priority,
+    projectBelonged: req.body.projectBelonged
   });
-
-  console.log('Task created', task);
 
   task.save()
     .then(savedTask => res.json(savedTask))
@@ -68,32 +67,34 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const task = req.task;
-  if (req.body.TaskName) {
-    task.TaskName = req.body.TaskName;
+  if (req.body.taskName) {
+    task.taskName = req.body.taskName;
   }
-  if (req.body.Content) {
-    task.Content = req.body.Content;
+  if (req.body.content) {
+    task.content = req.body.content;
   }
-  if (req.body.URL) {
-    task.URL = req.body.URL;
+  if (req.body.url) {
+    task.url = req.body.url;
   }
-  if (req.body.Assigned) {
-    task.Assigned.push(req.body.Assigned);
+  if (req.body.assignees) {
+    User.getByEmail(req.body.assignees).then((user) => {
+      task.assignees.push(user._id);
+    });
   }
-  if (req.body.DueDate) {
-    task.DueDate = req.body.DueDate;
+  if (req.body.dueDate) {
+    task.dueDate = req.body.dueDate;
   }
-  if (req.body.Active) {
-    task.Active = req.body.Active;
+  if (req.body.isActive) {
+    task.isActive = req.body.isActive;
   }
-  if (req.body.Completed) {
-    task.Completed = req.body.Completed;
+  if (req.body.completed) {
+    task.completed = req.body.completed;
   }
-  if (req.body.Priority) {
-    task.Priority = req.body.Priority;
+  if (req.body.priority) {
+    task.priority = req.body.priority;
   }
-  if (req.body.ProjectBelonged) {
-    task.ProjectBelonged = req.body.ProjectBelonged;
+  if (req.body.projectBelonged) {
+    task.projectBelonged.push(req.body.projectBelonged);
   }
 
   task.save()
