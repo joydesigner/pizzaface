@@ -12,11 +12,11 @@ const TaskSchema = new mongoose.Schema({
   taskName: String,
   content: String,
   url: String,
-  assignees: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }],
-  // assignees: Array,
+  // assignees: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'User'
+  // }],
+  assignees: Array,
   dueDate: Date,
   isActive: Boolean,
   completed: Boolean,
