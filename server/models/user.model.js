@@ -16,15 +16,20 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  business: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Business'
-  }],
+  // business: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: 'Business'
+  // }],
+  business: String,
   role: {
     type: String,
-    enum: ['USER', 'ADMIN', 'SUPERADMIN'],
+    enum: ['USER', 'ADMIN', 'MANAGER'],
     default: 'USER'
-  }
+  },
+  tasks: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Task'
+  }]
 });
 
 /**

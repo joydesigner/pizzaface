@@ -77,8 +77,10 @@ function update(req, res, next) {
     task.url = req.body.url;
   }
   if (req.body.assignees) {
+    task.assignees.push(req.body.assignees);
+    // user need to push the task
     User.getByEmail(req.body.assignees).then((user) => {
-      task.assignees.push(user._id);
+      user.tasks.push(task._id);
     });
   }
   if (req.body.dueDate) {
