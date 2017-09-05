@@ -56,7 +56,6 @@ function create(req, res, next) {
           if (project) {
             project.tasks.push(thisTask._id);
             project.save();
-            console.log('Project::', project);
           }
         })
         .then(() => {
@@ -64,10 +63,8 @@ function create(req, res, next) {
           User.getByEmail(thisTask.assignees[0])
             .then((user) => {
               if (user) {
-                console.log('User::', user);
                 user.tasks.push(thisTask._id);
                 user.save();
-                // console.log('User::', user);
               }
             });
         });
