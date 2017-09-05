@@ -1,5 +1,6 @@
 import Task from '../models/task.model';
 import User from '../models/user.model';
+import Project from '../models/project.model';
 
 /**
  * Load task and append to req.
@@ -46,9 +47,31 @@ function create(req, res, next) {
     priority: req.body.priority,
     projectBelonged: req.body.projectBelonged
   });
-
   task.save()
-    .then(savedTask => res.json(savedTask))
+    .then((savedTask) => {
+      const thisTask = savedTask;
+      res.json(thisTask);
+      Project.get(thisTask.projectBelonged)
+        .then((project) => {
+          if (project) {
+            project.tasks.push(thisTask._id);
+            project.save();
+            console.log('Project::', project);
+          }
+        })
+        .then(() => {
+          console.log('Task Assignees::', thisTask.assignees[0]);
+          User.getByEmail(thisTask.assignees[0])
+            .then((user) => {
+              if (user) {
+                console.log('User::', user);
+                user.tasks.push(thisTask._id);
+                user.save();
+                // console.log('User::', user);
+              }
+            });
+        });
+    })
     .catch(e => next(e));
 }
 

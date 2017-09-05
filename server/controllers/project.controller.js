@@ -33,6 +33,7 @@ function getByAdminEmail(req, res, next, email) {
     .catch(e => next(e));
 }
 
+
 /**
  * Create new project
  * @property {string} req.body.ProjectName - The project name of project.
@@ -83,7 +84,6 @@ function update(req, res, next) {
   if (req.body.tasks) {
     project.tasks.push(req.body.tasks);
   }
-
   project.save()
     .then(savedProject => res.json(savedProject))
     .catch(e => next(e));
