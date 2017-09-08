@@ -73,6 +73,7 @@ ProjectSchema.statics = {
    */
   getByAdminEmail(email) {
     return this.find({ owner: email })
+      .populate('tasks')
       .then((project) => {
         if (project) {
           return project;
@@ -90,6 +91,7 @@ ProjectSchema.statics = {
    */
   list({ skip = 0, limit = 50 } = {}) {
     return this.find()
+      .populate('tasks')
       .sort({ createdAt: -1 })
       .skip(+skip)
       .limit(+limit);
