@@ -74,7 +74,6 @@ ProjectSchema.statics = {
   getByAdminEmail(email) {
     return this.find({ owner: email })
       .populate('tasks')
-      .sort({ createdDate: 'desc' })
       .then((project) => {
         if (project) {
           return project;
