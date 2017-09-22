@@ -88,7 +88,7 @@ TaskSchema.statics = {
    */
   list({ skip = 0, limit = 50 } = {}) {
     return this.find()
-      .sort({ createdAt: -1 })
+      .sort({ createdOn: -1 })
       .skip(+skip)
       .limit(+limit);
   }
