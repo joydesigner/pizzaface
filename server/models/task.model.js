@@ -17,6 +17,10 @@ const TaskSchema = new mongoose.Schema({
   //   ref: 'User'
   // }],
   assignees: Array,
+  createdOn: {
+    type: Date,
+    default: Date.now
+  },
   dueDate: Date,
   isActive: Boolean,
   completed: Boolean,

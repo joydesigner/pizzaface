@@ -41,6 +41,7 @@ function create(req, res, next) {
     content: req.body.content,
     url: req.body.url,
     assignees: req.body.assignees,
+    createdOn: req.body.createdOn,
     dueDate: req.body.dueDate,
     isActive: req.body.isActive,
     completed: req.body.completed,
@@ -102,6 +103,9 @@ function update(req, res, next) {
     User.getByEmail(req.body.assignees).then((user) => {
       user.tasks.push(task._id);
     });
+  }
+  if (req.body.createdOn) {
+    task.createdOn = req.body.createdOn;
   }
   if (req.body.dueDate) {
     task.dueDate = req.body.dueDate;
