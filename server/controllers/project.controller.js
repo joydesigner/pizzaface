@@ -21,7 +21,7 @@ function get(req, res) {
 }
 
 /**
- * Get project by admin email
+ * Get projects by admin email
  * @returns {Project}
  */
 function getByAdminEmail(req, res, next, email) {

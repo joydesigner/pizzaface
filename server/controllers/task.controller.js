@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import Task from '../models/task.model';
 import User from '../models/user.model';
 import Project from '../models/project.model';
@@ -60,6 +61,7 @@ function create(req, res, next) {
           }
         })
         .then(() => {
+        // TODO: task assignees currently only support the first one
           console.log('Task Assignees::', thisTask.assignees[0]);
           User.getByEmail(thisTask.assignees[0])
             .then((user) => {
@@ -148,7 +150,17 @@ function list(req, res, next) {
 function remove(req, res, next) {
   const task = req.task;
   task.remove()
-    .then(deletedTask => res.json(deletedTask))
+    .then((deletedTask) => {
+      // console.log('Deleted Task: ', deletedTask);
+      res.json(deletedTask);
+      // remove the task from user.tasks
+      if (deletedTask.assignees.length > 0) {
+        User.getByEmail(deletedTask.assignees[0]).then((user) => {
+          lodash.pull(user.tasks, deletedTask._id);
+          // console.log(user.tasks);
+        });
+      }
+    })
     .catch(e => next(e));
 }
 

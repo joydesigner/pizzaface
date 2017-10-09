@@ -50,7 +50,7 @@ TaskSchema.method({
  */
 TaskSchema.statics = {
   /**
-   * Get task
+   * Get task by id
    * @param {ObjectId} id - The objectId of task.
    * @returns {Promise<Task, APIError>}
    */

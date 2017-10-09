@@ -56,7 +56,7 @@ UserSchema.statics = {
    */
   get(id) {
     return this.findById(id)
-      .populate('business')
+      // .populate('business')
       .then((user) => {
         if (user) {
           return user;
