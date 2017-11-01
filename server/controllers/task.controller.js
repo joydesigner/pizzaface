@@ -24,9 +24,43 @@ function get(req, res) {
 }
 
 /**
+ * Get tasks by projectId and User
+ * @returns {Tasks}
+ */
+
+function getTaskByUser(req, res, next, email) {
+  Task.getByAssigneeEmail(email).then((task) => {
+    req.task = task; // eslint-disable-line no-param-reassign
+    return res.json(req.task);
+  }).catch(e => next(e));
+}
+
+function getTaskByUserProject(req, res, next, projectId, email) {
+  Task.getByAssigneeProject(email, projectId).then((task) => {
+    req.task = task; // eslint-disable-line no-param-reassign
+    return res.json(req.task);
+  })
+    .catch(e => next(e));
+}
+
+/**
+ * Get tasks by projectId
+ * @returns {Tasks}
+ */
+
+function getTaskByProjectId(req, res, next, projectId) {
+  Task.getByProjectId(projectId).then((task) => {
+    req.task = task; // eslint-disable-line no-param-reassign
+    return res.json(req.task);
+  })
+    .catch(e => next(e));
+}
+
+/**
  * Create new task
  * @property {string} req.body.TaskName - The TaskName of task.
  * @property {string} req.body.Content - The Content of task.
+ * @property {string} req.body.Notes - The Notes of task.
  * @property {string} req.body.URL - The Content of task.
  * @property {string} req.body.Assignee - The Assignee of task.
  * @property {Date} req.body.DueDate - The DueDate of task.
@@ -40,8 +74,10 @@ function create(req, res, next) {
   const task = new Task({
     taskName: req.body.taskName,
     content: req.body.content,
+    notes: req.body.notes,
     url: req.body.url,
     assignees: req.body.assignees,
+    percentage: req.body.percentage,
     createdOn: req.body.createdOn,
     dueDate: req.body.dueDate,
     isActive: req.body.isActive,
@@ -49,6 +85,7 @@ function create(req, res, next) {
     priority: req.body.priority,
     projectBelonged: req.body.projectBelonged
   });
+  console.log('Task::', task);
   task.save()
     .then((savedTask) => {
       const thisTask = savedTask;
@@ -62,14 +99,17 @@ function create(req, res, next) {
         })
         .then(() => {
         // TODO: task assignees currently only support the first one
-          console.log('Task Assignees::', thisTask.assignees[0]);
-          User.getByEmail(thisTask.assignees[0])
-            .then((user) => {
-              if (user) {
-                user.tasks.push(thisTask._id);
-                user.save();
-              }
-            });
+          thisTask.assignees.push(req.body.assignees);
+
+          thisTask.assignees.forEach((assignee) => {
+            User.getByEmail(assignee)
+              .then((user) => {
+                if (user) {
+                  user.tasks.push(thisTask._id);
+                  user.save();
+                }
+              });
+          });
         });
     })
     .catch(e => next(e));
@@ -79,6 +119,7 @@ function create(req, res, next) {
  * Update existing Task
  * @property {string} req.body.TaskName - The TaskName of task.
  * @property {string} req.body.Content - The Content of task.
+ * @property {Array} req.body.notes - The Notes of task.
  * @property {string} req.body.URL - The Content of task.
  * @property {string} req.body.Assignee - The Assignee of task.
  * @property {Date} req.body.DueDate - The DueDate of task.
@@ -90,17 +131,35 @@ function create(req, res, next) {
  */
 function update(req, res, next) {
   const task = req.task;
+  console.log('task update request::', req.body);
   if (req.body.taskName) {
     task.taskName = req.body.taskName;
   }
   if (req.body.content) {
     task.content = req.body.content;
   }
+  if (req.body.notes) {
+    console.log('updating task notes:', req.body.notes);
+    task.notes.push(req.body.notes);
+  }
+  if (req.body.percentage) {
+    console.log('updating task percentage', req.body.percentage);
+    task.percentage = req.body.percentage;
+  }
   if (req.body.url) {
     task.url = req.body.url;
   }
   if (req.body.assignees) {
-    task.assignees.push(req.body.assignees);
+    // check if the assignee exist, if not push
+    if (task.assignees.indexOf(req.body.assignees) === -1) {
+      console.log('not in the array');
+      console.log('requested assignees', req.body.assignees);
+      console.log('task assignees', task.assignees);
+      task.assignees.push(req.body.assignees);
+    } else {
+      console.log('alreay in');
+      res.send('<h3>The assignee is already assigned with the task.</h3>');
+    }
     // user need to push the task
     User.getByEmail(req.body.assignees).then((user) => {
       user.tasks.push(task._id);
@@ -164,4 +223,4 @@ function remove(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { load, get, create, update, list, remove };
+export default { load, get, getTaskByUser, getTaskByUserProject, getTaskByProjectId, create, update, list, remove };// eslint-disable-line max-len

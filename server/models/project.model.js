@@ -78,7 +78,23 @@ ProjectSchema.statics = {
         if (project) {
           return project;
         }
-        const err = new APIError('No such project exists for this user!', httpStatus.NOT_FOUND);
+        const err = new APIError('No such project exists for this admin!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
+  },
+  /**
+   * Get project by owner
+   * @param {User} email - The email of project tasks assigned to.
+   * @returns {Promise<Project, APIError>
+   */
+  getByTasksAssigned(email) {
+    return this.find({ owner: email }, { tasks: { $elemMatch: { assignees: email } } })
+      .populate('tasks')
+      .then((project) => {
+        if (project) {
+          return project;
+        }
+        const err = new APIError('No such project exists for this admin!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
       });
   },

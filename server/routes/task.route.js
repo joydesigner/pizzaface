@@ -15,6 +15,18 @@ router.route('/')
 
 router.route('/:taskId')
 /** GET /api/tasks/:taskId - Get task */
+  .get(taskCtrl.get);
+
+router.route('/user/:email')
+/** GET /api/tasks/:email - Get task by assignee emails */
+  .get(taskCtrl.get);
+
+router.route('/projectTask/:projectId')
+/** GET /api/tasks/project/:projectId - Get task */
+  .get(taskCtrl.getTaskByProjectId);
+
+router.route('/projectUser/:projectId/:user')
+  /** GET /api/tasks/:projectId/:email - Get task */
   .get(taskCtrl.get)
 
   /** PUT /api/tasks/:taskId - Update task */
@@ -26,5 +38,7 @@ router.route('/:taskId')
 
 /** Load task when API with taskId route parameter is hit */
 router.param('taskId', taskCtrl.load);
-
+router.param('email', taskCtrl.getTaskByUser);
+router.param('projectId', taskCtrl.getTaskByProjectId);
+router.param('projectId/user', taskCtrl.getTaskByUserProject);
 export default router;

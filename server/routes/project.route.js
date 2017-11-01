@@ -28,8 +28,13 @@ router.route('/me/:email')
 /** GET /api/projects/me/:email - Get projects */
   .get(projectCtrl.get);
 
+router.route('/user/:assignee')
+/** GET /api/projects/user/:email - Get projects */
+  .get(projectCtrl.get);
+
 /** Load project when API with projectId route parameter is hit */
 router.param('projectId', projectCtrl.load);
 router.param('email', projectCtrl.getByAdminEmail);
+router.param('assignee', projectCtrl.getByTasksAssigned);
 
 export default router;

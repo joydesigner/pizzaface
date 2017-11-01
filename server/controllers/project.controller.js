@@ -20,6 +20,7 @@ function get(req, res) {
   return res.json(req.project);
 }
 
+
 /**
  * Get projects by admin email
  * @returns {Project}
@@ -33,6 +34,18 @@ function getByAdminEmail(req, res, next, email) {
     .catch(e => next(e));
 }
 
+/**
+ * Get projects by assignee's email
+ * @returns {Project}
+ */
+function getByTasksAssigned(req, res, next, email) {
+  Project.getByTasksAssigned(email)
+    .then((project) => {
+      req.project = project; // eslint-disable-line no-param-reassign
+      return res.json(req.project);
+    })
+    .catch(e => next(e));
+}
 
 /**
  * Create new project
@@ -113,4 +126,4 @@ function remove(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { load, get, getByAdminEmail, create, update, list, remove };
+export default { load, get, getByAdminEmail, getByTasksAssigned, create, update, list, remove };

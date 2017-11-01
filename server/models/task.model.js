@@ -11,16 +11,24 @@ import APIError from '../helpers/APIError';
 const TaskSchema = new mongoose.Schema({
   taskName: String,
   content: String,
+  notes: [{
+    actor: String,
+    verb: String,
+    objectTask: String,
+    comments: String,
+    time: Date
+  }],
   url: String,
   // assignees: [{
   //   type: mongoose.Schema.Types.ObjectId,
   //   ref: 'User'
   // }],
-  assignees: Array,
+  assignees: [String],
   createdOn: {
     type: Date,
     default: Date.now
   },
+  percentage: Number,
   dueDate: Date,
   isActive: Boolean,
   completed: Boolean,
@@ -71,9 +79,41 @@ TaskSchema.statics = {
    * @returns {Promise<Task, APIError>}
    */
   getByProjectId(id) {
-    return this.find({ projectBelongedTo: id })
+    return this.find({ projectBelonged: id })
       .then((task) => {
         if (task) {
+          return task;
+        }
+        const err = new APIError('No such task for this project!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
+  },
+  /**
+   * Get tasks by assignee(email)
+   * @param (email) email - the email of assignees
+   * @returns {Promise<Task, APIError>}
+   */
+  getByAssigneeEmail(email) {
+    return this.find({ assignees: email })
+      .then((task) => {
+        if (task) {
+          console.log(task);
+          return task;
+        }
+        const err = new APIError('No such task for this project!', httpStatus.NOT_FOUND);
+        return Promise.reject(err);
+      });
+  },
+  /**
+   * Get tasks by assignee(email) and projectId
+   * @param (email) email, (id) id
+   * @returns {Promise<Task, APIError>}
+   */
+  getByAssigneeProject(id, email) {
+    return this.find({ projectBelonged: id }, { assignees: email })
+      .then((task) => {
+        if (task) {
+          console.log('get by Assignee Project', task);
           return task;
         }
         const err = new APIError('No such task for this project!', httpStatus.NOT_FOUND);
