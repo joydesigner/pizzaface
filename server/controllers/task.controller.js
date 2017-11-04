@@ -149,22 +149,7 @@ function update(req, res, next) {
   if (req.body.url) {
     task.url = req.body.url;
   }
-  if (req.body.assignees) {
-    // check if the assignee exist, if not push
-    if (task.assignees.indexOf(req.body.assignees) === -1) {
-      console.log('not in the array');
-      console.log('requested assignees', req.body.assignees);
-      console.log('task assignees', task.assignees);
-      task.assignees.push(req.body.assignees);
-    } else {
-      console.log('alreay in');
-      res.send('<h3>The assignee is already assigned with the task.</h3>');
-    }
-    // user need to push the task
-    User.getByEmail(req.body.assignees).then((user) => {
-      user.tasks.push(task._id);
-    });
-  }
+
   if (req.body.createdOn) {
     task.createdOn = req.body.createdOn;
   }
@@ -182,6 +167,23 @@ function update(req, res, next) {
   }
   if (req.body.projectBelonged) {
     task.projectBelonged.push(req.body.projectBelonged);
+  }
+
+  if (req.body.assignees) {
+    // check if the assignee exist, if not push
+    if (task.assignees.indexOf(req.body.assignees) === -1) {
+      console.log('not in the array');
+      console.log('requested assignees', req.body.assignees);
+      console.log('task assignees', task.assignees);
+      task.assignees.push(req.body.assignees);
+    } else {
+      console.log('alreay in');
+      task.assignees = req.body.assignees;
+    }
+    // user need to push the task
+    User.getByEmail(req.body.assignees).then((user) => {
+      user.tasks.push(task._id);
+    });
   }
 
   task.save()

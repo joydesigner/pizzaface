@@ -15,27 +15,24 @@ router.route('/')
 
 router.route('/:taskId')
 /** GET /api/tasks/:taskId - Get task */
-  .get(taskCtrl.get);
+  .get(taskCtrl.get)
+  /** PUT /api/tasks/:taskId - Update task */
+  // .put(validate(paramValidation.updateTask), taskCtrl.update)
+  .put(taskCtrl.update)
+  /** DELETE /api/tasks/:taskId - Delete task */
+  .delete(taskCtrl.remove);
 
 router.route('/user/:email')
 /** GET /api/tasks/:email - Get task by assignee emails */
   .get(taskCtrl.get);
 
 router.route('/projectTask/:projectId')
-/** GET /api/tasks/project/:projectId - Get task */
+/** GET /api/projectTask/:projectId - Get task */
   .get(taskCtrl.getTaskByProjectId);
 
 router.route('/projectUser/:projectId/:user')
-  /** GET /api/tasks/:projectId/:email - Get task */
-  .get(taskCtrl.get)
-
-  /** PUT /api/tasks/:taskId - Update task */
-  // .put(validate(paramValidation.updateTask), taskCtrl.update)
-  .put(taskCtrl.update)
-
-  /** DELETE /api/tasks/:taskId - Delete task */
-  .delete(taskCtrl.remove);
-
+  /** GET /api/projectUser/:projectId/:email - Get task */
+  .get(taskCtrl.get);
 /** Load task when API with taskId route parameter is hit */
 router.param('taskId', taskCtrl.load);
 router.param('email', taskCtrl.getTaskByUser);
