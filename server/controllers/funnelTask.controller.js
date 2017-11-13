@@ -1,13 +1,13 @@
 import lodash from 'lodash';
-import Task from '../models/task.model';
 import User from '../models/user.model';
 import Project from '../models/project.model';
+import FunnelTask from '../models/funnelTask.model';
 
 /**
- * Load task and append to req.
+ * Load FunnelTask and append to req.
  */
 function load(req, res, next, id) {
-  Task.get(id)
+  FunnelTask.get(id)
     .then((task) => {
       req.task = task; // eslint-disable-line no-param-reassign
       return next();
@@ -24,36 +24,15 @@ function get(req, res) {
 }
 
 /**
- * Get tasks by projectId and User
+ * Get tasks by assignees
  * @returns {Tasks}
  */
 
 function getTaskByUser(req, res, next, email) {
-  Task.getByAssigneeEmail(email).then((task) => {
+  FunnelTask.getByAssigneeEmail(email).then((task) => {
     req.task = task; // eslint-disable-line no-param-reassign
     return res.json(req.task);
   }).catch(e => next(e));
-}
-
-function getTaskByUserProject(req, res, next, projectId, email) {
-  Task.getByAssigneeProject(email, projectId).then((task) => {
-    req.task = task; // eslint-disable-line no-param-reassign
-    return res.json(req.task);
-  })
-    .catch(e => next(e));
-}
-
-/**
- * Get tasks by projectId
- * @returns {Tasks}
- */
-
-function getTaskByProjectId(req, res, next, projectId) {
-  Task.getByProjectId(projectId).then((task) => {
-    req.task = task; // eslint-disable-line no-param-reassign
-    return res.json(req.task);
-  })
-    .catch(e => next(e));
 }
 
 /**
@@ -71,7 +50,7 @@ function getTaskByProjectId(req, res, next, projectId) {
  * @returns {Task}
  */
 function create(req, res, next) {
-  const task = new Task({
+  const task = new FunnelTask({
     taskName: req.body.taskName,
     content: req.body.content,
     notes: req.body.notes,
@@ -97,7 +76,7 @@ function create(req, res, next) {
           }
         })
         .then(() => {
-        // TODO: task assignees currently only support the first one
+          // TODO: task assignees currently only support the first one
           thisTask.assignees.push(req.body.assignees);
 
           thisTask.assignees.forEach((assignee) => {
@@ -201,7 +180,7 @@ function update(req, res, next) {
  */
 function list(req, res, next) {
   const { limit = 50, skip = 0 } = req.query;
-  Task.list({ limit, skip })
+  FunnelTask.list({ limit, skip })
     .then(tasks => res.json(tasks))
     .catch(e => next(e));
 }
@@ -227,4 +206,4 @@ function remove(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { load, get, getTaskByUser, getTaskByUserProject, getTaskByProjectId, create, update, list, remove };// eslint-disable-line max-len
+export default { load, get, getTaskByUser, create, update, list, remove };// eslint-disable-line max-len

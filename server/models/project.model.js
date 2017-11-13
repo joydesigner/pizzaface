@@ -88,7 +88,7 @@ ProjectSchema.statics = {
    * @returns {Promise<Project, APIError>
    */
   getByTasksAssigned(email) {
-    return this.find({ owner: email }, { tasks: { $elemMatch: { assignees: email } } })
+    return this.find({ tasks: { $elemMatch: { assignees: email } } })
       .populate('tasks')
       .then((project) => {
         if (project) {

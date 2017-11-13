@@ -73,7 +73,6 @@ UserSchema.statics = {
   getByEmail(mail) {
     return this.findOne({ email: mail })
       .then((user) => {
-        console.log('User in Model::', user);
         if (user) {
           return user;
         }

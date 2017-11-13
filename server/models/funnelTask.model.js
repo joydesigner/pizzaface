@@ -1,16 +1,16 @@
 import Promise from 'bluebird';
 import mongoose from 'mongoose';
 import httpStatus from 'http-status';
-import Project from './project.model'; // eslint-disable-line no-unused-vars
 import User from './user.model'; // eslint-disable-line no-unused-vars
 import APIError from '../helpers/APIError';
 
 /**
  * Task Schema
  */
-const TaskSchema = new mongoose.Schema({
+const FunnelTaskSchema = new mongoose.Schema({
   taskName: String,
-  content: String,
+  type: String,
+  narrative: String,
   notes: [{
     actor: String,
     verb: String,
@@ -28,15 +28,8 @@ const TaskSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  percentage: Number,
   dueDate: Date,
-  isActive: Boolean,
-  completed: Boolean,
-  priority: Number,
-  projectBelonged: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Project'
-  }]
+  completed: Boolean
 });
 
 /**
@@ -50,41 +43,25 @@ const TaskSchema = new mongoose.Schema({
 /**
  * Methods
  */
-TaskSchema.method({
+FunnelTaskSchema.method({
 });
 
 /**
  * Statics
  */
-TaskSchema.statics = {
+FunnelTaskSchema.statics = {
   /**
-   * Get task by id
+   * Get funnel task by id
    * @param {ObjectId} id - The objectId of task.
    * @returns {Promise<Task, APIError>}
    */
   get(id) {
     return this.findById(id)
-      .populate('projectBelonged')
       .then((task) => {
         if (task) {
           return task;
         }
         const err = new APIError('No such task exists!', httpStatus.NOT_FOUND);
-        return Promise.reject(err);
-      });
-  },
-  /**
-   * Get tasks by ProjectId
-   * @param (ObjectId} projectId - the ObjectId of project.
-   * @returns {Promise<Task, APIError>}
-   */
-  getByProjectId(id) {
-    return this.find({ projectBelonged: id })
-      .then((task) => {
-        if (task) {
-          return task;
-        }
-        const err = new APIError('No such task for this project!', httpStatus.NOT_FOUND);
         return Promise.reject(err);
       });
   },
@@ -95,21 +72,6 @@ TaskSchema.statics = {
    */
   getByAssigneeEmail(email) {
     return this.find({ assignees: email })
-      .then((task) => {
-        if (task) {
-          return task;
-        }
-        const err = new APIError('No such task for this project!', httpStatus.NOT_FOUND);
-        return Promise.reject(err);
-      });
-  },
-  /**
-   * Get tasks by assignee(email) and projectId
-   * @param (email) email, (id) id
-   * @returns {Promise<Task, APIError>}
-   */
-  getByAssigneeProject(id, email) {
-    return this.find({ projectBelonged: id }, { assignees: email })
       .then((task) => {
         if (task) {
           return task;
@@ -135,4 +97,4 @@ TaskSchema.statics = {
 /**
  * @typedef Task
  */
-export default mongoose.model('Task', TaskSchema);
+export default mongoose.model('FunnelTask', FunnelTaskSchema);

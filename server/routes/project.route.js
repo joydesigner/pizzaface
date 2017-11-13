@@ -24,7 +24,7 @@ router.route('/:projectId')
   /** DELETE /api/projects/:projectId - Delete project */
   .delete(projectCtrl.remove);
 
-router.route('/me/:email')
+router.route('/owner/:email')
 /** GET /api/projects/me/:email - Get projects */
   .get(projectCtrl.get);
 
