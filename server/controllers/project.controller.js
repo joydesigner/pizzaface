@@ -3,8 +3,8 @@ import Project from '../models/project.model';
 /**
  * Load project and append to req.
  */
-function load(req, res, next, id) {
-  Project.get(id)
+function load(req, res, next) {
+  Project.get(req.params.projectId)
     .then((project) => {
       req.project = project; // eslint-disable-line no-param-reassign
       return next();
@@ -120,9 +120,16 @@ function list(req, res, next) {
  * @returns {Project}
  */
 function remove(req, res, next) {
-  const project = req.project;
-  project.remove()
-    .then(deletedProject => res.json(deletedProject))
+  Project.findByIdAndRemove(req.params.projectId)
+    .then((deletedProject) => {
+    // TODO: also need to remove all tasks under the project
+      // TODO: remove all referenced projectBelongedTo
+      const response = {
+        message: 'Project is successfully deleted',
+        id: deletedProject._id
+      };
+      res.status(200).send(response);
+    })
     .catch(e => next(e));
 }
 

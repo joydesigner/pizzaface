@@ -25,11 +25,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ['USER', 'ADMIN', 'MANAGER'],
     default: 'USER'
-  },
-  tasks: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Task'
-  }]
+  }
 });
 
 /**
