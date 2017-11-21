@@ -1,3 +1,4 @@
+// import async from 'async';
 import Project from '../models/project.model';
 
 /**
@@ -129,6 +130,16 @@ function remove(req, res, next) {
         id: deletedProject._id
       };
       res.status(200).send(response);
+    })
+    .then(() => {
+      // Task.find({ projectBelonged: req.params.projectId }).then()
+      // Task.find({ projectBelonged: req.params.projectId }, (err, data) => {
+      //   async.each(data, function(dataItem, callback) {
+      //     dataItem.remove(function(err, result) {
+      //       ActionCtrl.saveRemove(result, callback);
+      //     });
+      //   });
+      // });
     })
     .catch(e => next(e));
 }

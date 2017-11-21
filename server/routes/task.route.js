@@ -22,6 +22,10 @@ router.route('/:taskId')
   /** DELETE /api/tasks/:taskId - Delete task */
   .delete(taskCtrl.remove);
 
+/** PUT /api/tasks/:taskId/:assignee - remove assignee */
+router.route('/:taskId/:assignee')
+  .put(taskCtrl.removeAssignee);
+
 router.route('/user/:email')
 /** GET /api/tasks/:email - Get task by assignee emails */
   .get(taskCtrl.get);
@@ -32,9 +36,10 @@ router.route('/projectTask/:projectId')
 
 router.route('/projectUser/:projectId/:user')
   /** GET /api/projectUser/:projectId/:email - Get task */
-  .get(taskCtrl.get);
+  .get(taskCtrl.getTaskByUserProject);
 /** Load task when API with taskId route parameter is hit */
 router.param('taskId', taskCtrl.load);
+router.param('assignee', taskCtrl.removeAssignee);
 router.param('email', taskCtrl.getTaskByUser);
 router.param('projectId', taskCtrl.getTaskByProjectId);
 router.param('projectId/user', taskCtrl.getTaskByUserProject);

@@ -196,6 +196,29 @@ function list(req, res, next) {
 }
 
 /**
+ * Remove assignee from task
+ * @returns {Task}
+ */
+function removeAssignee(req, res, next) {
+  const task = req.task;
+  if (req.body.assignees) {
+    // check if the assignee exist, if not push
+    const assignees = task.assignees;
+    const assignee = req.params.assignee;
+    const index = assignees.indexOf(assignee);
+
+    if (index > 0) {
+      assignees.splice(index, 1);
+    }
+  }
+
+  task.save()
+    .then(savedTask => res.json(savedTask))
+    .catch(e => next(e));
+}
+
+
+/**
  * Delete task.
  * @returns {Task}
  */
@@ -211,4 +234,4 @@ function remove(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { load, get, getTaskByUser, getTaskByUserProject, getTaskByProjectId, create, update, list, remove };// eslint-disable-line max-len
+export default { load, get, getTaskByUser, getTaskByUserProject, getTaskByProjectId, create, update, list, remove, removeAssignee };// eslint-disable-line max-len
