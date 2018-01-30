@@ -1,5 +1,4 @@
 import Task from '../models/task.model';
-import User from '../models/user.model';
 import Project from '../models/project.model';
 
 /**
@@ -166,15 +165,19 @@ function update(req, res, next) {
 
   if (req.body.assignees) {
     // check if the assignee exist, if not push
-    if (task.assignees.indexOf(req.body.assignees) === -1) {
+    if (task.assignees.indexOf(req.body.assignees) < 0) {
       task.assignees.push(req.body.assignees);
     } else {
-      task.assignees = req.body.assignees;
+      const response = {
+        message: 'The user is already in the assignee list'
+      };
+      res.status(404).send(response);
     }
+    task.assignees = Array.from(new Set(task.assignees));
     // user need to push the task
-    User.getByEmail(req.body.assignees).then((user) => {
-      user.tasks.push(task._id);
-    });
+    // User.getByEmail(req.body.assignees).then((user) => {
+    //   user.tasks.push(task._id);
+    // });
   }
 
   task.save()
@@ -206,10 +209,7 @@ function removeAssignee(req, res, next) {
     const assignees = task.assignees;
     const assignee = req.params.assignee;
     const index = assignees.indexOf(assignee);
-
-    if (index > 0) {
-      assignees.splice(index, 1);
-    }
+    assignees.splice(index, 1);
   }
 
   task.save()

@@ -59,6 +59,7 @@ function create(req, res, next) {
   const project = new Project({
     projectName: req.body.projectName,
     description: req.body.description,
+    tasks: req.body.tasks,
     owner: req.body.owner,
     createdOn: req.body.createdOn,
     isActive: req.body.isActive
